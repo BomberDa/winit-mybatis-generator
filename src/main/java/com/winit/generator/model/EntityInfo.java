@@ -1,6 +1,7 @@
 package com.winit.generator.model;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -20,7 +21,7 @@ public class EntityInfo {
      */
     private String entityPackage;
     
-    /*
+    /**
      * 实体类名
      */
     private String className;
@@ -59,6 +60,10 @@ public class EntityInfo {
      * 属性名和字段名的映射
      */
     private Map<String, String> propNameColumnNames;
+    /**
+     * 主键列表
+     */
+    private List<String> keyList;
     
     public Map<String, String> getPropJdbcTypes() {
         return propJdbcTypes;
@@ -162,4 +167,15 @@ public class EntityInfo {
     public void setPropNameColumnNames(Map<String, String> propNameColumnNames) {
         this.propNameColumnNames = propNameColumnNames;
     }
+
+
+	public List<String> getKeyList() {
+		return keyList;
+	}
+
+
+	public void setKeyList(List<String> keyList) {
+		this.keyList = keyList;
+	}
+    
 }

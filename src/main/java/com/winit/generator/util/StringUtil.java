@@ -96,5 +96,6 @@ public class StringUtil {
     public static void main(String[] args) {
         System.out.println(subBySplit("BirthdayReminder\\生日名单.xls", "/"));
         System.out.println(convertFieldName2PropName("qyk_yong_kang"));
+        
     }
 }

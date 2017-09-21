@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.winit.generator.Constants;
 import com.winit.generator.config.Configuration;
 import com.winit.generator.framework.AbstractApplicationTask;
 import com.winit.generator.framework.context.ApplicationContext;
@@ -95,7 +94,13 @@ public class InitTask extends AbstractApplicationTask {
                     tableInfo.setType(tableType);
                     logger.info("表{}的类型:{}", tableName, tableType);
                     
-                    
+                    //表主键集合
+                    ResultSet pk = dbMetaData.getPrimaryKeys(null, null, tableName.toUpperCase());
+                    List<String> pkNames = new ArrayList<String>();
+                    while( pk.next() ) {
+                        String pk_name=(String) pk.getObject(4);
+                        pkNames.add(pk_name);
+                    }                
                     //字段
                     //获取列的结果集
                     columnRS = dbMetaData.getColumns(null,schemaPattern.toUpperCase(), tableName.toUpperCase(), "%");
@@ -105,6 +110,7 @@ public class InitTask extends AbstractApplicationTask {
                         String columnName = columnRS.getString("COLUMN_NAME").toLowerCase();
                         String columnType = columnRS.getString("TYPE_NAME").toLowerCase();
                         String columnRemark = columnRS.getString("REMARKS");
+                        int iskey = 2;
                         logger.info("字段名称：{}, 字段类型：{}, 字段注释：{}", columnName, columnType, columnRemark);
                         
                         int len = columnRS.getInt("COLUMN_SIZE");
@@ -116,15 +122,23 @@ public class InitTask extends AbstractApplicationTask {
                         if (columnName == null || "".equals(columnName)) {
                             continue;
                         }
-                        
+                        //标记是否主键字段
+                        if(pkNames!=null&&pkNames.size()>0) {
+                        	for(String pkName:pkNames) {
+                        		if(columnName.toUpperCase().equals(pkName)) {
+                        			iskey=1;
+                        		}
+                        	}
+                        }
                         ColumnInfo ci = new ColumnInfo();
                         ci.setName(columnName);
                         ci.setType(columnType);
                         ci.setRemark(columnRemark);
                         ci.setLen(len);
-                        ci.setPrecision(precision);
-                        
+                        ci.setPrecision(precision); 
+                        ci.setIskey(iskey);
                         columnList.add(ci);
+
                     }
                     logger.info("*****************************");
                     tableInfo.setColumnList(columnList);

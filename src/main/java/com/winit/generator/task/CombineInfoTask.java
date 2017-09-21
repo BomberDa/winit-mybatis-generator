@@ -54,6 +54,7 @@ public class CombineInfoTask extends AbstractApplicationTask {
             Map<String, String> propRemarks = new LinkedHashMap<String, String>();
             Map<String, String> propJdbcTypes = new LinkedHashMap<String, String>();
             Map<String, String> propName2ColumnNames = new LinkedHashMap<String, String>();
+            List<String> keyNames = new ArrayList();
             
             entityInfo.setTableName(tableName);
             entityInfo.setEntityName(entityName);
@@ -66,6 +67,7 @@ public class CombineInfoTask extends AbstractApplicationTask {
             for (ColumnInfo columnInfo : columns) {
                 String fieldName = columnInfo.getName();
                 String fieldType = columnInfo.getType();
+                int isKey = columnInfo.getIskey();
                 
                 //通过字段名生成属性名
                 String propName = StringUtil.convertFieldName2PropName(fieldName);
@@ -75,6 +77,7 @@ public class CombineInfoTask extends AbstractApplicationTask {
                 propRemarks.put(propName, columnInfo.getRemark());
                 propJdbcTypes.put(propName, PropertyUtil.getValueByKey("_" + propType));
                 propName2ColumnNames.put(propName, columnInfo.getName().toUpperCase());
+                if(isKey==1) { keyNames.add(columnInfo.getName()); }
             }
             logger.info("属性类型：{}", propTypes);
             logger.info("属性jdbcTypes：{}", propJdbcTypes);
@@ -92,6 +95,7 @@ public class CombineInfoTask extends AbstractApplicationTask {
             entityInfo.setPropRemarks(propRemarks);
             entityInfo.setPropJdbcTypes(propJdbcTypes);
             entityInfo.setPropNameColumnNames(propName2ColumnNames);
+            entityInfo.setKeyList(keyNames);
             entityInfo.setImports(imports);
             entityInfo.setPackageClassName(entityInfo.getEntityPackage() + "." + entityInfo.getClassName());
             entityInfos.add(entityInfo);

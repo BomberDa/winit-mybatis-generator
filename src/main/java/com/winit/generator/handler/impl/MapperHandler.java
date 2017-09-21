@@ -23,24 +23,26 @@ public class MapperHandler extends BaseHandler<MapperInfo> {
       //<result column="SU_ROUTE_CODE" jdbcType="VARCHAR" property="suRouteCode" />
         this.param.put("namespace", info.getNamespace());
         this.param.put("entityType", info.getEntityInfo().getPackageClassName());
-        this.param.put("tableName", info.getEntityInfo().getTableName());
+        this.param.put("tableName", info.getEntityInfo().getTableName().toUpperCase());
         this.param.put("entityName", info.getEntityInfo().getEntityName());
         
         StringBuilder resultMap = new StringBuilder();
         StringBuilder baseColumn = new StringBuilder();
+        StringBuilder keyProps = new StringBuilder(" ");
         StringBuilder insertIfColumns = new StringBuilder();
         StringBuilder insertIfProps = new StringBuilder();
         StringBuilder insertBatchColumns = new StringBuilder();
         StringBuilder insertBatchProps = new StringBuilder();
         StringBuilder updateColProps = new StringBuilder();
         StringBuilder updateBatchColProps = new StringBuilder();
+        StringBuilder findListConditon = new StringBuilder();
+        
         //resultMap
         Map<String, String> propJdbcTypes = info.getEntityInfo().getPropJdbcTypes();
         for (Entry<String, String> entry : info.getEntityInfo().getPropNameColumnNames().entrySet()) {
             String propName = entry.getKey();
             String columnName = entry.getValue();
             
-            if (!("id".equals(propName))) {
                 resultMap.append("    <result column=\"").append(columnName).append("\" jdbcType=\"")
                 .append(propJdbcTypes.get(propName)).append("\" property=\"").append(propName)
                 .append("\" />\r\n");
@@ -63,7 +65,6 @@ public class MapperHandler extends BaseHandler<MapperInfo> {
                     .append(propName).append(",jdbcType=").append(propJdbcTypes.get(propName)).append("},\r\n").append("        </if>\r\n");
                 }
                
-            }
             baseColumn.append(columnName).append(",");
             
             if (!("updated".equals(propName)) && !("updatedby".equals(propName))) {
@@ -90,7 +91,28 @@ public class MapperHandler extends BaseHandler<MapperInfo> {
                 insertBatchProps.append("#{item.")
                 .append(propName).append(",jdbcType=").append(propJdbcTypes.get(propName)).append("},");
             }
-            
+ 
+            /**
+             * <if test="isDelete != null"> AND IS_DELETE =
+             * #{isDelete,jdbcType=VARCHAR} </if>
+             */
+                findListConditon.append("    <if test=\"")
+                    //.append(propName)
+                    .append(columnName.toLowerCase())
+                    .append(" != null and ")
+                    .append(columnName.toLowerCase())
+                    .append(" !=''\">\\r\\n      AND ")
+                    .append(columnName)
+                    .append("=#{")
+                    .append(columnName.toLowerCase())
+                    .append(",jdbcType=")
+                    .append(propJdbcTypes.get(propName))
+                    .append("}\r\n")
+                    .append("    </if>\r\n");     
+        }
+        
+        for (String keyName : info.getEntityInfo().getKeyList()) {
+        	keyProps.append(" AND ").append(keyName).append(" = #{").append(keyName).append(",jdbcType=VARCHAR} ");
         }
         this.param.put("resultMap", resultMap.toString());
         this.param.put("baseColumn", baseColumn.substring(0, baseColumn.length() - 1));
@@ -100,6 +122,8 @@ public class MapperHandler extends BaseHandler<MapperInfo> {
         this.param.put("insertBatchProps", insertBatchProps.substring(0, insertBatchProps.length() - 1));
         this.param.put("updateColProps", updateColProps.toString());
         this.param.put("updateBatchColProps", updateBatchColProps.toString());
+        this.param.put("keyProps", keyProps.toString());
+        this.param.put("findListConditon", findListConditon.toString());
     }
 
 }

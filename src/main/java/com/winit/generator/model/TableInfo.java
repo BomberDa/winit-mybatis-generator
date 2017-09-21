@@ -7,6 +7,7 @@ public class TableInfo {
     private String type;
     private String remark;
     private List<ColumnInfo> columnList;
+    private List<ColumnInfo> keyList;
 
     public String getName() {
         return name;
@@ -40,7 +41,16 @@ public class TableInfo {
         this.columnList = columnList;
     }
 
-    @Override
+    
+    public List<ColumnInfo> getKeyList() {
+		return keyList;
+	}
+
+	public void setKeyList(List<ColumnInfo> keyList) {
+		this.keyList = keyList;
+	}
+
+	@Override
     public String toString() {
         return "TableInfo [name=" + name + ", type=" + type + ", remark=" + remark + ", columnList=" + columnList + "]";
     }

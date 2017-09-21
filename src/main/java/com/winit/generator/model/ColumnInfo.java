@@ -5,6 +5,7 @@ public class ColumnInfo {
     private String type;
     private String remark;
     private int len;
+    private int iskey;
     private int precision;
     
     public int getLen() {
@@ -46,5 +47,13 @@ public class ColumnInfo {
     public void setType(String type) {
         this.type = type;
     }
+
+	public int getIskey() {
+		return iskey;
+	}
+
+	public void setIskey(int iskey) {
+		this.iskey = iskey;
+	}
 
 }

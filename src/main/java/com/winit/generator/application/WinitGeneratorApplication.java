@@ -2,6 +2,7 @@ package com.winit.generator.application;
 
 import com.winit.generator.framework.Application;
 import com.winit.generator.task.CombineInfoTask;
+import com.winit.generator.task.ControllerTask;
 import com.winit.generator.task.DaoTask;
 import com.winit.generator.task.EntityTask;
 import com.winit.generator.task.InitTask;
@@ -34,6 +35,7 @@ public class WinitGeneratorApplication {
         .addApplicationTask(DaoTask.class)
         .addApplicationTask(ServiceTask.class)
         .addApplicationTask(ServiceImplTask.class)
+        .addApplicationTask(ControllerTask.class)
         .addApplicationTask(MapperTask.class)
         .addApplicationTask(VoTask.class)
         .work();
