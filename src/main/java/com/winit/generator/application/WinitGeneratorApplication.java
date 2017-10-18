@@ -6,6 +6,7 @@ import com.winit.generator.task.ControllerTask;
 import com.winit.generator.task.DaoTask;
 import com.winit.generator.task.EntityTask;
 import com.winit.generator.task.InitTask;
+import com.winit.generator.task.ListJspTask;
 import com.winit.generator.task.MapperTask;
 import com.winit.generator.task.ServiceImplTask;
 import com.winit.generator.task.ServiceTask;
@@ -36,6 +37,7 @@ public class WinitGeneratorApplication {
         .addApplicationTask(ServiceTask.class)
         .addApplicationTask(ServiceImplTask.class)
         .addApplicationTask(ControllerTask.class)
+        .addApplicationTask(ListJspTask.class)
         .addApplicationTask(MapperTask.class)
         .addApplicationTask(VoTask.class)
         .work();
